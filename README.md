@@ -144,7 +144,6 @@ Features that can be added later: <br>
 | Team Member | MVP Use Case |
 |-------------|--------------|
 | Pauline |**Create a Text Journal Entry**<br><br>**Lead:** Pauline Nguyen<br>**Primary actor:** App user<br><br>**Goal:** Create and save a text journal entry linked to a quest.<br><br>**Preconditions:**<br>1. The user is logged in.<br>2. The user has a quest available to journal about.<br>3. The user is on the journal page for that quest.<br><br>**Trigger:** The user clicks a text block on the journal page for the quest.<br><br>**Main success scenario:**<br>1. The system displays the selected quest and a text field for the reflection.<br>2. The user enters a reflection.<br>3. The user selects “Save.”<br>4. The system checks that the reflection is not blank.<br>5. The system saves the entry with its associated user and quest.<br>6. The system displays the saved entry.<br><br>**Alternative flows and exceptions:**<br>1. Blank reflection: The system displays “Please enter a reflection” and keeps the form open.<br>2. Save fails: The system displays an error and retains the reflection so the user can retry.<br>3. User cancels: The system exits without saving the entry.<br><br>**Success postcondition:** The entry is stored persistently and can be retrieved after restarting the application.<br><br>**Failure postcondition:** No new entry is saved. |
- |
 | Lucy | Use Case 1: LogIn, SetUsername |
 | Joon | Use Case |
 | Serena | Use Case |
