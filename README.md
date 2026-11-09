@@ -42,8 +42,6 @@ Side Quest App focused on Productivity & Entertainment
 
 ## User Stories
 
-We will remove this later but here is a template for how you can write your user stories: As a [kind of user] I want to [accomplish a goal] so that [I receive some benefit] -Pauline
-
 * **User Story 1**: As a user, I want to set up my personal info (username, profile picture) and check out my current level so that I can visually personalize my account page.
 * **User Story 2**: As a user, I want to accept side quests and track them on a dashboard, marking each one completed or abandoned and earning XP when I finish, so that I can see my progress and feel accomplished as my history grows.
 * **User Story 3**: As a user, I want to document my completed side quests through journal entries and photos (either taken with my camera or uploaded from my gallery) so that I can look back on my experiences, relive fun memories, and celebrate my achievements.
@@ -56,7 +54,7 @@ We will remove this later but here is a template for how you can write your user
 ### Use Case 1: LogIn, SetUsername, SetProfilePicture, CheckLevel
 ### Use Case 2: Progress
 Lead: Daniel
-2.1 Accept Quest
+#### 2.1 Accept Quest
 
 Main flow:
 User clicks "Do this quest" on a quest (from the quest catalogue, recommendations, or a map pin).
@@ -70,7 +68,7 @@ The user has already completed this quest: system shows "You've already complete
 The quest doesn't exist: system shows an error.
 The user cancels at step 2: nothing happens.
 
-2.2 Complete Quest
+#### 2.2 Complete Quest
 
 Main flow:
 User clicks "Complete" on a pending quest in the dashboard.
@@ -87,7 +85,7 @@ The quest has been deleted: system shows "This quest no longer exists."
 
 In every alternative flow, nothing is saved and no XP is given.
 
-2.3 Abandon Quest
+#### 2.3 Abandon Quest
 
 Main flow:
 User clicks "Abandon" on a pending quest.
@@ -98,7 +96,7 @@ Alternative flows:
 The quest is not pending: system shows an error.
 The user cancels at step 2: nothing happens.
 
-2.4 View Dashboard 
+#### 2.4 View Dashboard 
 
 Main flow:
 User opens the Dashboard tab (it also refreshes after any of Use Cases 2.1 to 2.3).
@@ -109,6 +107,7 @@ Alternative flows:
 The user has no quests: system shows "No quests yet!" with a button to the recommendations.
 
 ### Use Case 3: Create a Journal Entry
+
 Lead: Pauline Nguyen <br>
 Primary actor: App user <br>
 Goal: Save a journal entry containing a written reflection and optional photos, associated with a selected quest.
