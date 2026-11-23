@@ -31,7 +31,6 @@ public class QuestRecommendation {
             System.out.println("What kind of sidequests would you like?");
             askInterests();
             askActivityType();
-            askSocialPreferences();
             askTimeAvailability();
             askBudget();
         }
@@ -59,13 +58,6 @@ public class QuestRecommendation {
             String activityType = askString(
                     "Do you prefer indoor or outdoor quests?",
                     List.of("indoor", "outdoor", "either"));
-            preferences.setActivityType(activityType);
-        }
-
-        private void askSocialPreferences() {
-            String activityType = askString(
-                    "Do you prefer solo or group quests?",
-                    List.of("solo", "group", "either"));
             preferences.setActivityType(activityType);
         }
 
@@ -230,11 +222,6 @@ public class QuestRecommendation {
             if (matches(prefs.getActivityType(), quest.isIndoor())) {
                 points += ACTIVITY_POINTS;
             }
-
-            // Social: add here once SideQuest exposes it
-            // if (matches(prefs.getSocialPreference(), quest.getSocialType())) {
-            //     points += SOCIAL_POINTS;
-            // }
 
             return points;
         }
