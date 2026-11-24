@@ -11,7 +11,9 @@ import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.function.Predicate;
+import java.util.function.BiConsumer;
+
+import interface_adapter.journal.JournalEntryForm;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -22,30 +24,19 @@ import javax.swing.SwingUtilities;
 
 /** Edits the contents of a single quest's journal page. */
 public final class JournalEntryView extends JPanel {
-    public static final class Contents {
-        public final String entry;
-        public final String notes;
-        public final BufferedImage photo;
-
-        public Contents(String entry, String notes, BufferedImage photo) {
-            this.entry = entry;
-            this.notes = notes;
-            this.photo = photo;
-        }
-    }
-
     private final JournalTextArea entryTextArea;
-    private final JournalTextArea notesTextArea;
+    private JournalEntryForm savedContents;
     private final JLabel photoPreview;
     private BufferedImage photo;
 
-    public JournalEntryView(final String questName, final Contents initialContents,
-                            final Predicate<Contents> saveEntry, final Runnable returnToJournal) {
+    public JournalEntryView(final String questName, final JournalEntryForm initialContents,
+                            final BiConsumer<JournalEntryForm, Runnable> saveEntry, final Runnable returnToJournal) {
         setLayout(null);
         setBackground(JournalStyle.PAPER);
         setPreferredSize(new Dimension(JournalStyle.WIDTH, JournalStyle.HEIGHT));
+        savedContents = initialContents;
         JournalStyle.addPageHeader(this, "Journal Entry",
-                () -> navigateBackFromEntry(initialContents, saveEntry, returnToJournal));
+                () -> navigateBackFromEntry(saveEntry, returnToJournal));
 
         final JLabel questNameLabel = JournalStyle.label(questName, JournalStyle.UI_FONT.deriveFont(14f));
         questNameLabel.setBounds(55, 57, 304, 23);
@@ -57,20 +48,25 @@ public final class JournalEntryView extends JPanel {
         insertPhotoButton.setBounds(142, 84, 130, 24);
         add(insertPhotoButton);
 
-        photo = initialContents.photo;
+        photo = initialContents.getPhoto();
         photoPreview = createPhotoPreview();
         add(photoPreview);
 
-        entryTextArea = new JournalTextArea("Journal entry", initialContents.entry,
+        entryTextArea = new JournalTextArea("Journal entry", initialContents.getReflection(),
                 "Add a description for your side quest...", 366, 275);
         add(createEntryTextPanel(entryTextArea));
 
-        final int notesTop = 761;
-        final int notesHeight = JournalStyle.HEIGHT - notesTop - 8;
-        notesTextArea = new JournalTextArea("Notes", initialContents.notes, "", 378, notesHeight);
-        notesTextArea.setBounds(15, notesTop, 378, notesHeight);
-        add(createNotesLabel(notesTextArea));
-        add(notesTextArea);
+        JButton saveButton = JournalStyle.roundedButton("Save", JournalStyle.PHOTO_BUTTON,
+                () -> saveCurrentContents(saveEntry, () -> { }));
+        saveButton.setBounds(142, 727, 130, 32);
+        add(saveButton);
+
+        JButton removePhotoButton = JournalStyle.roundedButton("Remove Photo", JournalStyle.PAPER, () -> {
+            photo = null;
+            photoPreview.repaint();
+        });
+        removePhotoButton.setBounds(142, 351, 130, 24);
+        add(removePhotoButton);
     }
 
     private JLabel createPhotoPreview() {
@@ -94,15 +90,6 @@ public final class JournalEntryView extends JPanel {
         entryTextArea.setBounds(14, 19, 366, 275);
         entryTextPanel.add(entryTextArea);
         return entryTextPanel;
-    }
-
-    private static JLabel createNotesLabel(final JournalTextArea notesTextArea) {
-        final JLabel notesLabel = new JLabel("Notes:");
-        notesLabel.setFont(JournalStyle.UI_FONT.deriveFont(14f));
-        notesLabel.setForeground(JournalStyle.INK);
-        notesLabel.setBounds(18, 738, 100, 23);
-        notesLabel.setLabelFor(notesTextArea);
-        return notesLabel;
     }
 
     private void choosePhoto() {
@@ -143,11 +130,16 @@ public final class JournalEntryView extends JPanel {
         photoGraphics.dispose();
     }
 
-    private void navigateBackFromEntry(Contents initialContents, Predicate<Contents> saveEntry,
-                                       Runnable returnToJournal) {
-        Contents editedContents = new Contents(entryTextArea.getText(), notesTextArea.getText(), photo);
-        if (editedContents.entry.equals(initialContents.entry) && editedContents.notes.equals(initialContents.notes)
-                && editedContents.photo == initialContents.photo) {
+    private void saveCurrentContents(BiConsumer<JournalEntryForm, Runnable> saveEntry, Runnable onSaved) {
+        JournalEntryForm editedContents = new JournalEntryForm(entryTextArea.getText(), photo);
+        saveEntry.accept(editedContents, () -> {
+            savedContents = editedContents;
+            onSaved.run();
+        });
+    }
+
+    private void navigateBackFromEntry(BiConsumer<JournalEntryForm, Runnable> saveEntry, Runnable returnToJournal) {
+        if (entryTextArea.getText().equals(savedContents.getReflection()) && photo == savedContents.getPhoto()) {
             returnToJournal.run();
             return;
         }
@@ -161,9 +153,7 @@ public final class JournalEntryView extends JPanel {
 
         JButton saveButton = JournalStyle.roundedButton("Save", JournalStyle.PAPER, () -> {
             promptDialog.dispose();
-            if (saveEntry.test(editedContents)) {
-                returnToJournal.run();
-            }
+            saveCurrentContents(saveEntry, returnToJournal);
         });
         JButton discardButton = JournalStyle.roundedButton("Don't Save", JournalStyle.PAPER, () -> {
             promptDialog.dispose();

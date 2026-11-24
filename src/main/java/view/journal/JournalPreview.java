@@ -1,39 +1,39 @@
 package view.journal;
 
+import data_access.FileJournalEntryRepository;
+import interface_adapter.journal.JournalEntryController;
+import use_case.journal.JournalEntryInteractor;
+
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-/** Standalone preview with sample quests and session-only entries. */
+/** Runs the journal with sample quests and local storage. */
 public final class JournalPreview {
     private final CardLayout screenLayout = new CardLayout();
     private final JPanel screenContainer = new JPanel(screenLayout);
-    private final Map<String, JournalEntryView.Contents> previewEntriesByQuestName = new HashMap<>();
-    private final JournalView journalView = new JournalView(() -> screenLayout.show(screenContainer, "home"),
-            this::showQuests);
-    private JournalEntryView entryView;
 
     private JournalPreview() {
+        Path storage = Path.of(System.getProperty("user.home"), ".linkedout", "journal");
+        JournalEntryInteractor interactor = new JournalEntryInteractor(new FileJournalEntryRepository(storage));
+        JournalEntryController controller = new JournalEntryController("preview", interactor, interactor);
+        JournalPanel journal = new JournalPanel(controller, JournalPreview::sampleQuests,
+                () -> screenLayout.show(screenContainer, "home"));
         screenContainer.add(createHomePanel(), "home");
-        screenContainer.add(journalView, "journal");
-        showQuests(JournalView.Tab.COMPLETED);
+        screenContainer.add(journal, "journal");
         screenLayout.show(screenContainer, "journal");
     }
 
     private JPanel createHomePanel() {
-        final JPanel homePanel = new JPanel(new GridBagLayout());
+        JPanel homePanel = new JPanel(new GridBagLayout());
         homePanel.setBackground(JournalStyle.PAPER);
-        final GridBagConstraints buttonLayout = new GridBagConstraints();
+        GridBagConstraints buttonLayout = new GridBagConstraints();
         buttonLayout.ipadx = 50;
         buttonLayout.ipady = 12;
         homePanel.add(JournalStyle.roundedButton("Journal", JournalStyle.PHOTO_BUTTON,
@@ -41,46 +41,31 @@ public final class JournalPreview {
         return homePanel;
     }
 
-    private void showQuests(JournalView.Tab tab) {
-        List<String> questNames;
+    private static List<JournalPanel.Quest> sampleQuests(JournalView.Tab tab) {
         switch (tab) {
             case COMPLETED:
-                questNames = Arrays.asList("Visit a new café", "Browse a local bookshop", "Take a sunset walk",
-                        "Try a new recipe", "Explore a neighbourhood park", "Visit a farmers market",
-                        "Try a new workout", "Sketch a street scene");
-                break;
+                return List.of(new JournalPanel.Quest("cafe", "Visit a new café"),
+                        new JournalPanel.Quest("bookshop", "Browse a local bookshop"),
+                        new JournalPanel.Quest("sunset", "Take a sunset walk"),
+                        new JournalPanel.Quest("recipe", "Try a new recipe"),
+                        new JournalPanel.Quest("park", "Explore a neighbourhood park"),
+                        new JournalPanel.Quest("farmers-market", "Visit a farmers market"),
+                        new JournalPanel.Quest("workout", "Try a new workout"),
+                        new JournalPanel.Quest("sketch", "Sketch a street scene"));
             case IN_PROGRESS:
-                questNames = List.of("Find a new weekend trail", "Finish a library book");
-                break;
+                return List.of(new JournalPanel.Quest("trail", "Find a new weekend trail"),
+                        new JournalPanel.Quest("library", "Finish a library book"));
             case CANCELLED:
-                questNames = List.of("Visit the night market");
-                break;
+                return List.of(new JournalPanel.Quest("night-market", "Visit the night market"));
             default:
                 throw new AssertionError(tab);
         }
-        journalView.showQuests(questNames.stream()
-                .map(questName -> new JournalView.QuestRow(questName, () -> openEntry(questName)))
-                .collect(Collectors.toList()));
-    }
-
-    private void openEntry(String questName) {
-        if (entryView != null) {
-            screenContainer.remove(entryView);
-        }
-        entryView = new JournalEntryView(questName,
-                previewEntriesByQuestName.getOrDefault(questName, new JournalEntryView.Contents("", "", null)),
-                editedEntryContents -> {
-                    previewEntriesByQuestName.put(questName, editedEntryContents);
-                    return true;
-                }, () -> screenLayout.show(screenContainer, "journal"));
-        screenContainer.add(entryView, "entry");
-        screenLayout.show(screenContainer, "entry");
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            final JournalPreview preview = new JournalPreview();
-            final JFrame frame = new JFrame("Linked Out · Journal Preview");
+            JournalPreview preview = new JournalPreview();
+            JFrame frame = new JFrame("Linked Out · Journal Preview");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             preview.screenContainer.setPreferredSize(new Dimension(JournalStyle.WIDTH, JournalStyle.HEIGHT));
             frame.setContentPane(preview.screenContainer);
