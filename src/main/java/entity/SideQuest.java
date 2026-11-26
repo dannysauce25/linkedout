@@ -32,6 +32,12 @@ public class SideQuest {
                      Location location,
                      List<String> interests,
                      boolean isStarred) {
+
+        // validates the number of interests
+        if (interests.size() > 5) {
+            throw new IllegalArgumentException("A side quest cannot have more than 5 interests.");
+        }
+
         this.name = name;
         this.id = id;
         this.isIndoor = isIndoor;
