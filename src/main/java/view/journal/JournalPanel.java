@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 /** Journal screens for one signed-in user and their quests. */
 public final class JournalPanel extends JPanel {
@@ -26,7 +27,7 @@ public final class JournalPanel extends JPanel {
     private final JournalEntryController controller;
     private final Function<JournalView.Tab, List<Quest>> questsByStatus;
     private final JournalView journalView;
-    private JournalEntryView entryView;
+    private JScrollPane entryScrollPane;
 
     public JournalPanel(JournalEntryController controller,
                         Function<JournalView.Tab, List<Quest>> questsByStatus, Runnable returnHome) {
@@ -49,16 +50,17 @@ public final class JournalPanel extends JPanel {
     }
 
     private void showEntry(Quest quest, JournalEntryForm contents) {
-        if (entryView != null) {
-            remove(entryView);
+        if (entryScrollPane != null) {
+            remove(entryScrollPane);
         }
-        entryView = new JournalEntryView(quest.name, contents,
-                (edited, onSaved) -> controller.save(quest.id, edited, () -> {
-                    JOptionPane.showMessageDialog(this, "Journal entry saved.");
-                    onSaved.run();
-                }, this::showError),
+        JournalEntryView entryView = new JournalEntryView(quest.name, contents,
+                edited -> controller.save(quest.id, edited,
+                        () -> JOptionPane.showMessageDialog(this, "Journal entry saved."), this::showError),
                 () -> screens.show(this, "journal"));
-        add(entryView, "entry");
+        entryScrollPane = new JScrollPane(entryView);
+        entryScrollPane.setBorder(null);
+        entryScrollPane.getVerticalScrollBar().setUnitIncrement(20);
+        add(entryScrollPane, "entry");
         screens.show(this, "entry");
     }
 

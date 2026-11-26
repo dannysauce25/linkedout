@@ -6,17 +6,23 @@ import entity.SearchArea;
 import interface_adapter.find_nearby_quests.FindNearbyQuestsController;
 import interface_adapter.find_nearby_quests.FindNearbyQuestsPresenter;
 import interface_adapter.find_nearby_quests.FindNearbyQuestsViewModel;
+import interface_adapter.journal.JournalEntryController;
+import java.util.List;
+import java.util.function.Function;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 import use_case.find_nearby_quests.FindNearbyQuestsInteractor;
 import use_case.find_nearby_quests.QuestLocationDataAccessInterface;
+import use_case.journal.JournalEntryInteractor;
+import use_case.journal.JournalEntryRepository;
 import view.MapView;
+import view.journal.JournalPanel;
+import view.journal.JournalView;
 
 /**
- * Creates every object the app needs and connects them. Each teammate's use case
- * gets its own add... method so they can be wired in one place.
+ * Creates and connects the components for the app and its features.
  */
 public class AppBuilder {
     private static final String MAP_TAB = "Map";
@@ -62,6 +68,15 @@ public class AppBuilder {
         return this;
     }
 
+    /** Builds the journal for the supplied account and its quests. */
+    public JournalPanel buildJournal(JournalEntryRepository repository, String userId,
+                                     Function<JournalView.Tab, List<JournalPanel.Quest>> questsByStatus,
+                                     Runnable returnHome) {
+        JournalEntryInteractor interactor = new JournalEntryInteractor(repository);
+        JournalEntryController controller = new JournalEntryController(userId, interactor, interactor);
+        return new JournalPanel(controller, questsByStatus, returnHome);
+    }
+
     /**
      * Builds the main window. Opening the Map tab runs Use Case 4.
      *
@@ -83,7 +98,7 @@ public class AppBuilder {
             }
         }
         frame.pack();
-        frame.setLocationRelativeTo(null);
+        WindowPlacement.fitAndCenter(frame);
         return frame;
     }
 }

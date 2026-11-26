@@ -1,6 +1,6 @@
 package entity;
 
-/** A saved reflection associated with a user and a side quest. */
+/** A saved reflection or photo associated with a user and a side quest. */
 public final class JournalEntry {
     private final String userId;
     private final String questId;
@@ -18,17 +18,15 @@ public final class JournalEntry {
         if (questId == null || questId.isBlank()) {
             throw new IllegalArgumentException("Quest ID cannot be blank");
         }
-        if (reflection == null || reflection.isBlank()) {
-            throw new IllegalArgumentException("Please enter a reflection");
+        boolean hasPhoto = photo != null && photo.length > 0;
+        if ((reflection == null || reflection.isBlank()) && !hasPhoto) {
+            throw new IllegalArgumentException("Enter a description or add a photo.");
         }
 
         this.userId = userId;
         this.questId = questId;
-        this.reflection = reflection;
-        if (photo != null && photo.length == 0) {
-            throw new IllegalArgumentException("Photo cannot be empty");
-        }
-        this.photo = photo == null ? null : photo.clone();
+        this.reflection = reflection == null ? "" : reflection;
+        this.photo = hasPhoto ? photo.clone() : null;
     }
 
     public String getUserId() {

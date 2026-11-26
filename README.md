@@ -54,7 +54,7 @@ Side Quest App focused on Productivity & Entertainment
 
 * **User Story 1**: As a user, I want to set up my personal info (username, profile picture) and check out my current level so that I can visually personalize my account page.
 * **User Story 2**: As a user, I want to accept side quests and track them on a dashboard, marking each one completed or abandoned and earning XP when I finish, so that I can see my progress and feel accomplished as my history grows.
-* **User Story 3**: As a user, I want to document my completed side quests through journal entries and photos (either taken with my camera or uploaded from my gallery) so that I can look back on my experiences, relive fun memories, and celebrate my achievements.
+* **User Story 3**: As a user, I want to document my completed side quests through journal entries and photos imported from my device so that I can look back on my experiences, relive fun memories, and celebrate my achievements.
 * **User Story 4**: As a user, I want to be able to see nearby side quests.
 * **User Story 5**: As a user, I want to receive a list of recommended side quests so that I can choose side quests I am interested in.
 * **User Story 6**: As a user, I want to be able to log a side quest I completed as an entry in the app for other people to see, as well as browse a collection of default side quests to complete.
@@ -195,7 +195,7 @@ In every alternative flow, nothing is saved and no XP is given.
 **Alternative flows and exceptions:**
 
 1. Empty reflection: The system displays a validation message and allows the user to enter text.
-2. Camera unavailable or permission denied: The user can import an existing photo or continue without one.
+2. Image cannot be opened: The user can select a different image or continue without one.
 3. Save fails: The system displays an error, retains the entered content, and allows the user to retry.
 4. User cancels: The system asks whether to discard unsaved changes. If confirmed, it exits without creating an entry.
 
@@ -659,7 +659,6 @@ A circle on the map: a centre and a radius. It holds the rule for what counts as
 * **Documentation:** [OSM tile usage policy](https://operations.osmfoundation.org/policies/tiles/), [JXMapViewer2](https://github.com/msteiger/jxmapviewer2)
 * **How it is used in the program:** The Map tab downloads 256x256 map images from `https://tile.openstreetmap.org/{zoom}/{x}/{y}.png` for the area around the user. JXMapViewer2 (a Swing library, not a web API) requests those tiles, caches them on disk, and draws them. Only the `view` layer uses the library; the rest of the app works with its own `Location` entity. If tiles cannot be downloaded, the map shows a blank background and the "you are here" marker and pins are still drawn.
 
-[Complete Later: Camera API]
 
 [Back to top](#linked-out)
 

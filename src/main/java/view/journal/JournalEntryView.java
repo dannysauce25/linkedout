@@ -11,7 +11,7 @@ import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import interface_adapter.journal.JournalEntryForm;
 
@@ -24,19 +24,18 @@ import javax.swing.SwingUtilities;
 
 /** Edits the contents of a single quest's journal page. */
 public final class JournalEntryView extends JPanel {
+    private static final int CONTENT_HEIGHT = 712;
+
     private final JournalTextArea entryTextArea;
-    private JournalEntryForm savedContents;
     private final JLabel photoPreview;
     private BufferedImage photo;
 
     public JournalEntryView(final String questName, final JournalEntryForm initialContents,
-                            final BiConsumer<JournalEntryForm, Runnable> saveEntry, final Runnable returnToJournal) {
+                            final Consumer<JournalEntryForm> saveEntry, final Runnable returnToJournal) {
         setLayout(null);
         setBackground(JournalStyle.PAPER);
-        setPreferredSize(new Dimension(JournalStyle.WIDTH, JournalStyle.HEIGHT));
-        savedContents = initialContents;
-        JournalStyle.addPageHeader(this, "Journal Entry",
-                () -> navigateBackFromEntry(saveEntry, returnToJournal));
+        setPreferredSize(new Dimension(JournalStyle.WIDTH, CONTENT_HEIGHT));
+        JournalStyle.addPageHeader(this, "Journal Entry", returnToJournal);
 
         final JLabel questNameLabel = JournalStyle.label(questName, JournalStyle.UI_FONT.deriveFont(14f));
         questNameLabel.setBounds(55, 57, 304, 23);
@@ -57,15 +56,15 @@ public final class JournalEntryView extends JPanel {
         add(createEntryTextPanel(entryTextArea));
 
         JButton saveButton = JournalStyle.roundedButton("Save", JournalStyle.PHOTO_BUTTON,
-                () -> saveCurrentContents(saveEntry, () -> { }));
-        saveButton.setBounds(142, 727, 130, 32);
+                () -> saveEntry.accept(new JournalEntryForm(entryTextArea.getText(), photo)));
+        saveButton.setBounds(142, 664, 130, 32);
         add(saveButton);
 
         JButton removePhotoButton = JournalStyle.roundedButton("Remove Photo", JournalStyle.PAPER, () -> {
             photo = null;
             photoPreview.repaint();
         });
-        removePhotoButton.setBounds(142, 351, 130, 24);
+        removePhotoButton.setBounds(142, 315, 130, 24);
         add(removePhotoButton);
     }
 
@@ -80,13 +79,13 @@ public final class JournalEntryView extends JPanel {
             }
         };
         photoPreviewLabel.getAccessibleContext().setAccessibleName("Journal photo preview");
-        photoPreviewLabel.setBounds(123, 155, 168, 196);
+        photoPreviewLabel.setBounds(123, 119, 168, 196);
         return photoPreviewLabel;
     }
 
     private static JPanel createEntryTextPanel(final JournalTextArea entryTextArea) {
         final JPanel entryTextPanel = createRoundedGreenPanel(42);
-        entryTextPanel.setBounds(10, 383, 394, 313);
+        entryTextPanel.setBounds(10, 347, 394, 313);
         entryTextArea.setBounds(14, 19, 366, 275);
         entryTextPanel.add(entryTextArea);
         return entryTextPanel;
@@ -128,42 +127,6 @@ public final class JournalEntryView extends JPanel {
         photoGraphics.drawImage(photo, 8 + (width - scaledWidth) / 2, 9 + (height - scaledHeight) / 2,
                 scaledWidth, scaledHeight, null);
         photoGraphics.dispose();
-    }
-
-    private void saveCurrentContents(BiConsumer<JournalEntryForm, Runnable> saveEntry, Runnable onSaved) {
-        JournalEntryForm editedContents = new JournalEntryForm(entryTextArea.getText(), photo);
-        saveEntry.accept(editedContents, () -> {
-            savedContents = editedContents;
-            onSaved.run();
-        });
-    }
-
-    private void navigateBackFromEntry(BiConsumer<JournalEntryForm, Runnable> saveEntry, Runnable returnToJournal) {
-        if (entryTextArea.getText().equals(savedContents.getReflection()) && photo == savedContents.getPhoto()) {
-            returnToJournal.run();
-            return;
-        }
-
-        JDialog promptDialog = createModalDialog("Save your entry?");
-        JPanel content = createRoundedGreenPanel(36);
-        content.setPreferredSize(new Dimension(360, 148));
-        JLabel saveQuestionLabel = JournalStyle.label("Save your entry?", JournalStyle.UI_FONT.deriveFont(15f));
-        saveQuestionLabel.setBounds(0, 18, 360, 31);
-        content.add(saveQuestionLabel);
-
-        JButton saveButton = JournalStyle.roundedButton("Save", JournalStyle.PAPER, () -> {
-            promptDialog.dispose();
-            saveCurrentContents(saveEntry, returnToJournal);
-        });
-        JButton discardButton = JournalStyle.roundedButton("Don't Save", JournalStyle.PAPER, () -> {
-            promptDialog.dispose();
-            returnToJournal.run();
-        });
-        saveButton.setBounds(12, 60, 159, 47);
-        discardButton.setBounds(179, 60, 161, 47);
-        content.add(saveButton);
-        content.add(discardButton);
-        showDialog(promptDialog, content, saveButton);
     }
 
     private void showPhotoError() {
