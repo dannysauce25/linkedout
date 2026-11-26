@@ -1,21 +1,21 @@
-name,id,isIndoor,budget,expectedTime,exp,progressLevel,location,interests,isStarred
-Borrow a new book from Gerstein Library,1,true,free,under_10_minutes,20,0,"43.662249869870735, -79.39345368195869","academic, library, reading, campus",false
-Order a drink from Starbucks in Robarts Library,2,true,less_than_twenty,under_10_minutes,20,0,"43.66502722739748, -79.39870834346989","shopping, library, food, campus",false
-Take a photo of the King Edward VII Equestrian Statue,3,false,free,under_10_minutes,20,0,"43.66462433651245, -79.3903253933135","relaxation, photo, park, campus",false
-Visit the Art Gallery of Ontario,4,true,less_than_fifty,over_60_minutes,100,0,"43.65383556722918, -79.39193294571196","art, relaxation, museum, downtown",false
-Drop in for lane Swim at the Hart House Fitness Centre,5,true,free,under_60_minutes,60,0,"43.66419391833333, -79.39501118381115","fitness, campus, aquatic",false
-Run around the Queens Park once,6,false,free,under_30_minutes,40,0,"43.66447523390098, -79.39208859730309","fitness, campus, nature, relaxation",false
-Take a photo of the Sankofa Square,7,false,free,under_30_minutes,40,0,"43.65612792741581, -79.37992635156917","relaxation, photo, downtown",false
-Visit the Royal Ontario Museum,8,true,less_than_fifty,over_60_minutes,100,0,"43.66788040784731, -79.39458398381106","museum, campus, relaxation",false
-Visit the Pocket Planet Canada,9,true,less_than_fifty,under_60_minutes,60,0,"43.65712101412563, -79.38047890286138","attraction, relaxation, downtown",false
-Order Chipotle with a new Combination,10,true,less_than_fifty,under_10_minutes,20,0,"43.65637586685578, -79.38813172280574","relaxation, food, downtown",false
-Have a treat at IKEA Downtown,11,true,less_than_fifty,under_60_minutes,60,0,,,false
-"Go to Robarts Library, and ask out a very cute person to a starbucks coffee date",12,true,less_than_twenty,under_60_minutes,60,0,,,false
-Grab a frozen food kit at UTSU Community Kitchen on Tuesdays,13,true,free,under_10_minutes,20,0,,,false
-Drop in for Coffee & Co-working at Bahen Centre,14,true,free,over_60_minutes,100,0,,,false
-Windowshop at the UofT Bookstore,15,true,free,under_30_minutes,40,0,,,false
-Contribute to the puzzle at CS & Engineering Library,16,true,free,under_30_minutes,40,0,,,false
-Try out a new food truck on campus,17,false,less_than_fifty,under_30_minutes,40,0,,,false
-Watch a movie at Cineplex Dundas,18,true,less_than_fifty,over_60_minutes,100,0,,,false
-Get a UofT Library Passport at Ivey Library,19,true,free,under_10_minutes,20,0,,,false
-Study at Univeristy College Library,20,true,free,over_60_minutes,100,0,,,false
+name,id,isIndoor,budget,expectedTime,exp,progressLevel,location,interests,isStarred,questType
+Borrow a new book from Gerstein Library,1,indoor,free,under_10_minutes,20,not started,"43.662249869870735, -79.39345368195869","academic, library, reading, campus",false,default quest
+Order a drink from Starbucks in Robarts Library,2,indoor,less_than_twenty,under_10_minutes,20,not started,"43.66502722739748, -79.39870834346989","shopping, library, food, campus",false,default quest
+Take a photo of the King Edward VII Equestrian Statue,3,outdoor,free,under_10_minutes,20,not started,"43.66462433651245, -79.3903253933135","relaxation, photo, park, campus",false,default quest
+Visit the Art Gallery of Ontario,4,indoor,less_than_fifty,over_60_minutes,100,not started,"43.65383556722918, -79.39193294571196","art, relaxation, museum, downtown",false,default quest
+Drop in for lane Swim at the Hart House Fitness Centre,5,indoor,free,under_60_minutes,60,not started,"43.66419391833333, -79.39501118381115","fitness, campus, aquatic",false,default quest
+Run around the Queens Park once,6,outdoor,free,under_30_minutes,40,not started,"43.66447523390098, -79.39208859730309","fitness, campus, nature, relaxation",false,default quest
+Take a photo of the Sankofa Square,7,outdoor,free,under_30_minutes,40,not started,"43.65612792741581, -79.37992635156917","relaxation, photo, downtown",false,default quest
+Visit the Royal Ontario Museum,8,indoor,less_than_fifty,over_60_minutes,100,not started,"43.66788040784731, -79.39458398381106","museum, campus, relaxation",false,default quest
+Visit the Pocket Planet Canada,9,indoor,less_than_fifty,under_60_minutes,60,not started,"43.65712101412563, -79.38047890286138","attraction, relaxation, downtown",false,default quest
+Order Chipotle with a new Combination,10,indoor,less_than_fifty,under_10_minutes,20,not started,"43.65637586685578, -79.38813172280574","relaxation, food, downtown",false,default quest
+Have a treat at IKEA Downtown,11,indoor,less_than_fifty,under_60_minutes,60,not started,,,false,default quest
+"Go to Robarts Library, and ask out a very cute person to a starbucks coffee date",12,indoor,less_than_twenty,under_60_minutes,60,not started,,,false,default quest
+Grab a frozen food kit at UTSU Community Kitchen on Tuesdays,13,indoor,free,under_10_minutes,20,not started,,,false,default quest
+Drop in for Coffee & Co-working at Bahen Centre,14,indoor,free,over_60_minutes,100,not started,,,false,default quest
+Windowshop at the UofT Bookstore,15,indoor,free,under_30_minutes,40,not started,,,false,default quest
+Contribute to the puzzle at CS & Engineering Library,16,indoor,free,under_30_minutes,40,not started,,,false,default quest
+Try out a new food truck on campus,17,outdoor,less_than_fifty,under_30_minutes,40,not started,,,false,default quest
+Watch a movie at Cineplex Dundas,18,indoor,less_than_fifty,over_60_minutes,100,not started,,,false,default quest
+Get a UofT Library Passport at Ivey Library,19,indoor,free,under_10_minutes,20,not started,,,false,default quest
+Study at Univeristy College Library,20,indoor,free,over_60_minutes,100,not started,,,false,default quest
