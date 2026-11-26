@@ -75,7 +75,7 @@ public class SideQuest {
         return budget;
     }
 
-    public String isIndoor() {
+    public String getIsIndoor() {
         return isIndoor;
     }
 

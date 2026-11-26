@@ -32,7 +32,7 @@ class SideQuestTest {
 
         assertEquals("Visit the ROM", quest.getName());
         assertEquals("quest-7", quest.getId());
-        assertEquals("true", quest.isIndoor());
+        assertEquals("true", quest.getIsIndoor());
         assertEquals("less_than_twenty", quest.getBudget());
         assertEquals("over_60_minutes", quest.getExpectedTime());
         assertEquals(25, quest.getExp());
