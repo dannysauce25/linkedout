@@ -65,6 +65,7 @@ public class SideQuestDataAccessObject implements AddSideQuestDataAccessInterfac
     /**
      * Reads every row (except the header) and turns it into a SideQuest.
      */
+    @Override
     public List<SideQuest> getAllQuests() {
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(csvFile.toFile())).withSkipLines(1).build()) {
             List<String[]> rows = reader.readAll();
@@ -90,6 +91,7 @@ public class SideQuestDataAccessObject implements AddSideQuestDataAccessInterfac
      *
      * @return the quest, or null if there is no quest with that id
      */
+    @Override
     public SideQuest getQuestById(String id) {
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(csvFile.toFile())).withSkipLines(1).build()) {
             List<String[]> rows = reader.readAll();
@@ -113,6 +115,7 @@ public class SideQuestDataAccessObject implements AddSideQuestDataAccessInterfac
      * Every interest/tag used by at least one quest, without duplicates.
      * Useful for the "pick up to 5 tags" screen in Add Side Quest.
      */
+    @Override
     public List<String> getAllTags() {
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(csvFile.toFile())).withSkipLines(1).build()) {
             List<String[]> rows = reader.readAll();
@@ -140,6 +143,7 @@ public class SideQuestDataAccessObject implements AddSideQuestDataAccessInterfac
      * right now every user quest gets the id "0".
      * If the interactor should call it, add it to AddSideQuestDataAccessInterface too.
      */
+    @Override
     public String getNextId() {
         try (CSVReader reader = new CSVReaderBuilder(new FileReader(csvFile.toFile())).withSkipLines(1).build()) {
             // Reads every line sequentially, and keeps the largest id (0 if the file has no quests)
@@ -171,7 +175,7 @@ public class SideQuestDataAccessObject implements AddSideQuestDataAccessInterfac
         row[BUDGET] = sideQuest.getBudget();
         row[EXPECTED_TIME] = sideQuest.getExpectedTime();
         row[EXP] = String.valueOf(sideQuest.getExp());
-        row[PROGRESS_LEVEL] = String.valueOf(sideQuest.getProgressLevel());
+        row[PROGRESS_LEVEL] = sideQuest.getProgressLevel();
 
         // A quest without coordinates is saved with an empty location cell
         Location location = sideQuest.getLocation();
@@ -193,8 +197,7 @@ public class SideQuestDataAccessObject implements AddSideQuestDataAccessInterfac
         String isIndoor = row[IS_INDOOR];
         String budget = row[BUDGET];
         String expectedTime = row[EXPECTED_TIME];
-        int exp = Integer.parseInt(row[EXP].trim());
-        int progressLevel = Integer.parseInt(row[PROGRESS_LEVEL].trim());
+        String progressLevel = row[PROGRESS_LEVEL];
 
         Location location = null;
         if (!row[LOCATION].isBlank()) {
@@ -215,7 +218,7 @@ public class SideQuestDataAccessObject implements AddSideQuestDataAccessInterfac
         boolean isStarred = Boolean.parseBoolean(row[IS_STARRED].trim());
         String questType = row[QUEST_TYPE];
 
-        return new SideQuest(name, id, isIndoor, budget, expectedTime, exp, progressLevel, location, interests,
+        return new SideQuest(name, id, isIndoor, budget, expectedTime, progressLevel, location, interests,
                 isStarred, questType);
     }
 }

@@ -34,7 +34,7 @@ class FileQuestLocationDataAccessTest {
     }
 
     private static SideQuest quest(String id, Location location) {
-        return new SideQuest(id, id, "false", "free", "under_60_minutes", 10, 0,
+        return new SideQuest(id, id, "false", "free", "under_60_minutes", "not started",
                 location, List.of("Food"), false, SideQuest.DEFAULT_QUEST);
     }
 

@@ -23,9 +23,6 @@ public class AddSideQuestInteractor implements AddSideQuestInputBoundary {
         } else if (inputData.getExpectedTime() <= 0) {
             // outputBoundary.prepareFailView("Expected time (in minutes) must be greater than 0.");
             return;
-        } else if (inputData.getExp() <= 0) {
-            // outputBoundary.prepareFailView("Exp for the side quest must be a positive value.");
-            return;
         } else if (!"indoor".equals(inputData.getIsIndoor()) && !"outdoor".equals(inputData.getIsIndoor())
                 && !"either".equals(inputData.getIsIndoor())) {
             // outputBoundary.prepareFailView("Please select a valid activity type.");
@@ -72,7 +69,7 @@ public class AddSideQuestInteractor implements AddSideQuestInputBoundary {
 //        }
         // TODO: uncomment the lines above for assigning the generated quest id
         SideQuest sideQuest = new SideQuest(inputData.getQuestDescription(), "0",
-                inputData.getIsIndoor(), budget, expectedTime, inputData.getExp(), 0,
+                inputData.getIsIndoor(), budget, expectedTime, "not started",
                 inputData.getLocation(), inputData.getInterests(), false, inputData.getQuestType()
         );
 

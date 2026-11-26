@@ -16,18 +16,23 @@ class SideQuestTest {
 
     private static SideQuest questWithInterests(List<String> interests) {
         return new SideQuest("Read in Queen's Park", "12", "false", "free",
-                "under_60_minutes", 10, 0, UOFT, interests, false, SideQuest.DEFAULT_QUEST);
+                "under_60_minutes", "not started", UOFT, interests, false, SideQuest.DEFAULT_QUEST);
+    }
+
+    private static SideQuest questWithTime(String expectedTime) {
+        return new SideQuest("Read in Queen's Park", "12", "false", "free",
+                expectedTime, "not started", UOFT, List.of("reading"), false, SideQuest.DEFAULT_QUEST);
     }
 
     private static SideQuest questWithType(String questType) {
         return new SideQuest("Read in Queen's Park", "12", "false", "free",
-                "under_60_minutes", 10, 0, UOFT, List.of("reading"), false, questType);
+                "under_60_minutes", "not started", UOFT, List.of("reading"), false, questType);
     }
 
     @Test
     void storesAllConstructorValues() {
         SideQuest quest = new SideQuest("Visit the ROM", "quest-7", "true", "less_than_twenty",
-                "over_60_minutes", 25, 1, UOFT, List.of("museum", "history"), true,
+                "over_60_minutes", "in progress", UOFT, List.of("museum", "history"), true,
                 SideQuest.CUSTOM_QUEST);
 
         assertEquals("Visit the ROM", quest.getName());
@@ -35,8 +40,8 @@ class SideQuestTest {
         assertEquals("true", quest.getIsIndoor());
         assertEquals("less_than_twenty", quest.getBudget());
         assertEquals("over_60_minutes", quest.getExpectedTime());
-        assertEquals(25, quest.getExp());
-        assertEquals(1, quest.getProgressLevel());
+        assertEquals(100, quest.getExp());
+        assertEquals("in progress", quest.getProgressLevel());
         assertSame(UOFT, quest.getLocation());
         assertEquals(List.of("museum", "history"), quest.getInterests());
         assertTrue(quest.isStarred());
@@ -97,6 +102,20 @@ class SideQuestTest {
         assertThrows(IllegalArgumentException.class,
                 () -> questWithInterests(List.of("museum", "history", "education", "day trip",
                 "anthropology", "toronto")));
+    }
+
+    @Test
+    void expScalesWithExpectedTime() {
+        assertEquals(20, questWithTime("under_10_minutes").getExp());
+        assertEquals(40, questWithTime("under_30_minutes").getExp());
+        assertEquals(60, questWithTime("under_60_minutes").getExp());
+        assertEquals(100, questWithTime("over_60_minutes").getExp());
+    }
+
+    @Test
+    void rejectsUnknownExpectedTime() {
+        assertThrows(IllegalArgumentException.class, () -> questWithTime("under_5_minutes"));
+        assertThrows(IllegalArgumentException.class, () -> questWithTime(""));
     }
 
     @Test

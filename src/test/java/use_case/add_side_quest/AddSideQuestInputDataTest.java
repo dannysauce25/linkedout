@@ -12,7 +12,7 @@ class AddSideQuestInputDataTest {
     @Test
     void questEnteredByUserIsCustom() {
         AddSideQuestInputData inputData = new AddSideQuestInputData("Feed the ducks", "outdoor",
-                0, 20, 40, new Location(43.6629, -79.3957), List.of("nature"));
+                0, 20, new Location(43.6629, -79.3957), List.of("nature"));
 
         assertEquals(SideQuest.CUSTOM_QUEST, inputData.getQuestType());
         assertEquals("custom quest", inputData.getQuestType());
