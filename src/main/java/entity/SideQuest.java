@@ -7,6 +7,9 @@ import java.util.List;
     //2. The default for any side quest will be unstarred.
 
 public class SideQuest {
+    public static final String CUSTOM_QUEST = "custom quest";   // entered by a user
+    public static final String DEFAULT_QUEST = "default quest"; // ships with the app
+
     private final String name;
     private final String id; // A unique ID for quests
     private final String isIndoor;  // isIndoor is a String as there is a possibility of the activity being both indoors and outdoors
@@ -21,6 +24,7 @@ public class SideQuest {
     private final Location location; // latitude and longitude, validated by Location
     private final List<String> interests;
     private boolean isStarred;
+    private final String questType; // either CUSTOM_QUEST or DEFAULT_QUEST
 
     public SideQuest(String name,
                      String id,
@@ -31,11 +35,18 @@ public class SideQuest {
                      int progressLevel,
                      Location location,
                      List<String> interests,
-                     boolean isStarred) {
+                     boolean isStarred,
+                     String questType) {
 
         // validates the number of interests
         if (interests.size() > 5) {
             throw new IllegalArgumentException("A side quest cannot have more than 5 interests.");
+        }
+
+        // validates the quest type
+        if (!CUSTOM_QUEST.equals(questType) && !DEFAULT_QUEST.equals(questType)) {
+            throw new IllegalArgumentException(
+                    "Quest type must be \"" + CUSTOM_QUEST + "\" or \"" + DEFAULT_QUEST + "\".");
         }
 
         this.name = name;
@@ -48,6 +59,7 @@ public class SideQuest {
         this.location = location;
         this.interests = List.copyOf(interests);
         this.isStarred = isStarred;
+        this.questType = questType;
 
     }
 
@@ -90,6 +102,8 @@ public class SideQuest {
     public boolean isStarred() {
         return isStarred;
     }
+
+    public String getQuestType() {
+        return questType;
+    }
 }
-
-

@@ -73,7 +73,7 @@ public class AddSideQuestInteractor implements AddSideQuestInputBoundary {
         // TODO: uncomment the lines above for assigning the generated quest id
         SideQuest sideQuest = new SideQuest(inputData.getQuestDescription(), "0",
                 inputData.getIsIndoor(), budget, expectedTime, inputData.getExp(), 0,
-                inputData.getLocation(), inputData.getInterests(), false
+                inputData.getLocation(), inputData.getInterests(), false, inputData.getQuestType()
         );
 
         dataAccess.save(sideQuest);

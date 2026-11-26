@@ -16,13 +16,19 @@ class SideQuestTest {
 
     private static SideQuest questWithInterests(List<String> interests) {
         return new SideQuest("Read in Queen's Park", "12", "false", "free",
-                "under_60_minutes", 10, 0, UOFT, interests, false);
+                "under_60_minutes", 10, 0, UOFT, interests, false, SideQuest.DEFAULT_QUEST);
+    }
+
+    private static SideQuest questWithType(String questType) {
+        return new SideQuest("Read in Queen's Park", "12", "false", "free",
+                "under_60_minutes", 10, 0, UOFT, List.of("reading"), false, questType);
     }
 
     @Test
     void storesAllConstructorValues() {
         SideQuest quest = new SideQuest("Visit the ROM", "quest-7", "true", "less_than_twenty",
-                "over_60_minutes", 25, 1, UOFT, List.of("museum", "history"), true);
+                "over_60_minutes", 25, 1, UOFT, List.of("museum", "history"), true,
+                SideQuest.CUSTOM_QUEST);
 
         assertEquals("Visit the ROM", quest.getName());
         assertEquals("quest-7", quest.getId());
@@ -34,6 +40,7 @@ class SideQuestTest {
         assertSame(UOFT, quest.getLocation());
         assertEquals(List.of("museum", "history"), quest.getInterests());
         assertTrue(quest.isStarred());
+        assertEquals("custom quest", quest.getQuestType());
     }
 
     @Test
@@ -89,7 +96,25 @@ class SideQuestTest {
     void rejectsMoreThanFiveInterests() {
         assertThrows(IllegalArgumentException.class,
                 () -> questWithInterests(List.of("museum", "history", "education", "day trip",
-                "anthropology", "toronto");
+                "anthropology", "toronto")));
+    }
+
+    @Test
+    void acceptsBothQuestTypes() {
+        assertEquals("custom quest", questWithType("custom quest").getQuestType());
+        assertEquals("default quest", questWithType("default quest").getQuestType());
+    }
+
+    @Test
+    void rejectsUnknownQuestType() {
+        assertThrows(IllegalArgumentException.class, () -> questWithType("side quest"));
+        assertThrows(IllegalArgumentException.class, () -> questWithType("Custom Quest"));
+        assertThrows(IllegalArgumentException.class, () -> questWithType(""));
+    }
+
+    @Test
+    void rejectsNullQuestType() {
+        assertThrows(IllegalArgumentException.class, () -> questWithType(null));
     }
 
     @Test

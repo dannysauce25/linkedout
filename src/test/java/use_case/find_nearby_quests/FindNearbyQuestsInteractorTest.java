@@ -41,8 +41,8 @@ class FindNearbyQuestsInteractorTest {
     }
 
     private static SideQuest quest(String name, double latitude, double longitude) {
-        return new SideQuest(name, name, "false", "free", "under_60_minutes", 10,
-                new Location(latitude, longitude), List.of("Food"));
+        return new SideQuest(name, name, "false", "free", "under_60_minutes", 10, 0,
+                new Location(latitude, longitude), List.of("Food"), false, SideQuest.DEFAULT_QUEST);
     }
 
     private final RecordingPresenter presenter = new RecordingPresenter();
@@ -74,8 +74,9 @@ class FindNearbyQuestsInteractorTest {
 
     @Test
     void pinUsesTheQuestIdNotItsName() {
-        SideQuest park = new SideQuest("quest-42", "Read in Queen's Park", "false", "free",
-                "under_60_minutes", 10, new Location(43.6640, -79.3920), List.of("Reading"));
+        SideQuest park = new SideQuest("Read in Queen's Park", "quest-42", "false", "free",
+                "under_60_minutes", 10, 0, new Location(43.6640, -79.3920), List.of("Reading"),
+                false, SideQuest.DEFAULT_QUEST);
 
         interactorWith(new InMemorySideQuestDataAccessObject(List.of(park)))
                 .execute(new FindNearbyQuestsInputData(2));

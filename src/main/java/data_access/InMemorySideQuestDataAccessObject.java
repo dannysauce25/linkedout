@@ -62,7 +62,7 @@ public class InMemorySideQuestDataAccessObject implements QuestLocationDataAcces
     private static SideQuest sample(String id, String name, String isIndoor, int exp,
                                     double latitude, double longitude, List<String> interests) {
         return new SideQuest(name, id, isIndoor, SAMPLE_BUDGET, SAMPLE_EXPECTED_TIME, exp, 0,
-                new Location(latitude, longitude), interests, false);
+                new Location(latitude, longitude), interests, false, SideQuest.DEFAULT_QUEST);
     }
 
     @Override

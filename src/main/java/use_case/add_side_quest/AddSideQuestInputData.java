@@ -1,5 +1,6 @@
 package use_case.add_side_quest;
 import entity.Location;
+import entity.SideQuest;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -11,6 +12,7 @@ public class AddSideQuestInputData {
     private final int exp;
     private final Location location;
     private final List<String> interests;
+    private final String questType;
 
     public AddSideQuestInputData(String questDescription,
                                  String isIndoor,
@@ -26,6 +28,8 @@ public class AddSideQuestInputData {
         this.exp = exp;
         this.location = location;
         this.interests = interests == null ? new ArrayList<>() : new ArrayList<>(interests);
+        // A quest entered by the user is always a custom quest.
+        this.questType = SideQuest.CUSTOM_QUEST;
     }
 
     public String getQuestDescription() {
@@ -54,5 +58,9 @@ public class AddSideQuestInputData {
 
     public List<String> getInterests() {
         return new ArrayList<>(interests);
+    }
+
+    public String getQuestType() {
+        return questType;
     }
 }
