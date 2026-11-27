@@ -59,16 +59,7 @@ public class AddSideQuestInteractor implements AddSideQuestInputBoundary {
             expectedTime = "over_60_minutes";
         }
 
-//        int generated_quest_id
-//        int last_id = dataAccess.getLastId()
-//        if (last_id is Null){
-//            generated_quest_id = 0
-//        } else {
-//            String generatedQuestId = String(int(String.valueOf(dataAccess.getLastId()) + 1))
-//            ;
-//        }
-        // TODO: uncomment the lines above for assigning the generated quest id
-        SideQuest sideQuest = new SideQuest(inputData.getQuestDescription(), "0",
+        SideQuest sideQuest = new SideQuest(inputData.getQuestDescription(), dataAccess.getNextId(),
                 inputData.getIsIndoor(), budget, expectedTime, "not started",
                 inputData.getLocation(), inputData.getInterests(), false, inputData.getQuestType()
         );
