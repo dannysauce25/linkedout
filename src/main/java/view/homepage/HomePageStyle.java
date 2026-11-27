@@ -1,0 +1,96 @@
+package view.homepage;
+
+import javax.swing.*;
+import javax.swing.plaf.basic.BasicButtonUI;
+import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
+
+public final class HomePageStyle {
+    public static final int WIDTH = 414;
+    public static final int HEIGHT = 896;
+    public static final Color PAPER = new Color(0xfcfcfc);
+    public static final Color GREEN = new Color(0xdceedf);
+    public static final Color CARD_GREEN = new Color(0xe2efe3);
+    public static final Color PHOTO_BUTTON = new Color(0xdff0e2);
+    public static final Color INK = new Color(0x202624);
+    public static final Font UI_FONT = loadFont("DM-Sans");
+    public static final Font HANDWRITING = loadFont("Gochi-Hand");
+
+    private HomePageStyle() {
+    }
+
+    private static Font loadFont(String name) {
+        try (InputStream stream = Objects.requireNonNull(
+                HomePageStyle.class.getResourceAsStream("/journal/fonts/" + name + ".ttf"), name)) {
+            return Font.createFont(Font.TRUETYPE_FONT, stream);
+        } catch (IOException | FontFormatException exception) {
+            throw new IllegalStateException("Could not load " + name, exception);
+        }
+    }
+
+    public static JLabel label(String text, Font font) {
+        JLabel label = new JLabel(text, SwingConstants.CENTER);
+        label.putClientProperty("html.disable", true);
+        label.setFont(font);
+        label.setForeground(INK);
+        return label;
+    }
+
+    public static ImageIcon loadScaledIcon(String assetName, int iconWidth, int iconHeight) {
+        ImageIcon sourceIcon = new ImageIcon(Objects.requireNonNull(
+                HomePageStyle.class.getResource("/journal/assets/" + assetName + ".png"), assetName));
+        return new ImageIcon(sourceIcon.getImage().getScaledInstance(iconWidth, iconHeight, Image.SCALE_SMOOTH));
+    }
+
+    public static JButton iconButton(String label, ImageIcon icon, Runnable onClick) {
+        JButton button = new JButton(icon);
+        button.getAccessibleContext().setAccessibleName(label);
+        button.setToolTipText(label);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.addActionListener(event -> onClick.run());
+        return button;
+    }
+
+    public static JButton roundedButton(String label, Color fill, Runnable onClick) {
+        JButton button = new JButton(label) {
+            @Override
+            protected void paintComponent(Graphics graphics) {
+                paintRounded(graphics, fill, getWidth(), getHeight(), getHeight());
+                super.paintComponent(graphics);
+            }
+        };
+        button.setUI(new BasicButtonUI());
+        button.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
+        button.setFont(UI_FONT.deriveFont(12f));
+        button.setForeground(INK);
+        button.setMargin(new Insets(0, 0, 0, 0));
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.addActionListener(event -> onClick.run());
+        return button;
+    }
+
+    public static void paintRounded(Graphics graphics, Color fill, int width, int height, int cornerDiameter) {
+        Graphics2D roundedShapeGraphics = (Graphics2D) graphics.create();
+        roundedShapeGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        roundedShapeGraphics.setColor(fill);
+        roundedShapeGraphics.fillRoundRect(0, 0, width, height, cornerDiameter, cornerDiameter);
+        roundedShapeGraphics.dispose();
+    }
+
+    public static void addPageHeader(JPanel panel, String title, Runnable onBack) {
+        JButton backButton = iconButton("Back", loadScaledIcon("back", 32, 32), onBack);
+        backButton.setBounds(17, 22, 36, 36);
+        panel.add(backButton);
+        JLabel heading = label(title, UI_FONT.deriveFont(Font.BOLD, 26f));
+        heading.setBounds(65, 22, WIDTH - 130, 36);
+        panel.add(heading);
+    }
+}
