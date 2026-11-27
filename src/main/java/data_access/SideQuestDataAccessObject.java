@@ -63,6 +63,46 @@ public class SideQuestDataAccessObject implements AddSideQuestDataAccessInterfac
     }
 
     /**
+     * Replaces the saved row that has the same id as the given quest, and rewrites the CSV.
+     *
+     * @param sideQuest the new version of an already saved quest
+     * @throws IllegalArgumentException if no saved quest has that id
+     */
+    public void updateSideQuest(SideQuest sideQuest) {
+        List<String[]> rows;
+        try (CSVReader reader = new CSVReaderBuilder(new FileReader(csvFile.toFile())).withSkipLines(1).build()) {
+            rows = reader.readAll();
+        } catch (IOException e) {
+            throw new UncheckedIOException("Cannot retrieve all Side Quests.", e);
+        } catch (CsvException e) {
+            throw new RuntimeException("Cannot parse the CSV file.", e);
+        }
+
+        boolean found = false;
+        for (int i = 0; i < rows.size(); i++) {
+            String[] row = rows.get(i);
+            if (row.length > ID && row[ID].equals(sideQuest.getId())) {
+                rows.set(i, serializeQuest(sideQuest));
+                found = true;
+            }
+        }
+        if (!found) {
+            throw new IllegalArgumentException("No side quest has the id " + sideQuest.getId() + ".");
+        }
+
+        try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile.toFile(), false))) {
+            writer.writeNext(HEADER, false);
+            for (String[] row : rows) {
+                if (!(row.length == 1 && row[0].isBlank())) {
+                    writer.writeNext(row, false);
+                }
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException("Could not update this Side Quest.", e);
+        }
+    }
+
+    /**
      * Reads every row (except the header) and turns it into a SideQuest.
      */
     @Override
