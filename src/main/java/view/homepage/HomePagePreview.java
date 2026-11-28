@@ -4,20 +4,25 @@ package view.homepage;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
-/** Standalone preview with sample quests. */
+/** Standalone preview with sample data. */
 public final class HomePagePreview {
     private final CardLayout screenLayout = new CardLayout();
     private final JPanel screenContainer = new JPanel(screenLayout);
     private final HomePageView homePageView = new HomePageView(() -> screenLayout.show(screenContainer, "home"),
-            this::showQuests);
+            tab -> { });
 
     private HomePagePreview() {
         screenContainer.add(createHomePanel(), "home");
         screenContainer.add(homePageView, "homePage");
-        showQuests(HomePageView.Tab.HOME);
+        homePageView.showUserProfile("Username", 1, 40, 120);
+        homePageView.showRecommendedQuests(Arrays.asList(
+                new HomePageView.RecommendedQuest("Try out a new cafe", () -> { }, null),
+                new HomePageView.RecommendedQuest("Browse a bookshop", () -> { }, null),
+                new HomePageView.RecommendedQuest("Take a sunset walk", () -> { }, null),
+                new HomePageView.RecommendedQuest("Find a new trail", () -> { }, null),
+                new HomePageView.RecommendedQuest("Finish a library book", () -> { }, null),
+                new HomePageView.RecommendedQuest("Visit the night market", () -> { }, null)));
         screenLayout.show(screenContainer, "homePage");
     }
 
@@ -32,32 +37,10 @@ public final class HomePagePreview {
         return homePanel;
     }
 
-    private void showQuests(HomePageView.Tab tab) {
-        List<String> questNames;
-        switch (tab) {
-            case HOME:
-                questNames = Arrays.asList("Visit a new café", "Browse a local bookshop", "Take a sunset walk",
-                        "Try a new recipe", "Explore a neighbourhood park", "Visit a farmers market",
-                        "Try a new workout", "Sketch a street scene");
-                break;
-//            case :
-//                questNames = List.of("Find a new weekend trail", "Finish a library book");
-//                break;
-//            case CANCELLED:
-//                questNames = List.of("Visit the night market");
-//                break;
-            default:
-                throw new AssertionError(tab);
-        }
-        homePageView.showQuests(questNames.stream()
-                .map(questName -> new HomePageView.QuestRow(questName, () -> { }))
-                .collect(Collectors.toList()));
-    }
-
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             final HomePagePreview preview = new HomePagePreview();
-            final JFrame frame = new JFrame("Linked Out · Journal Preview");
+            final JFrame frame = new JFrame("Linked Out · Home Preview");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             preview.screenContainer.setPreferredSize(new Dimension(HomePageStyle.WIDTH, HomePageStyle.HEIGHT));
             frame.setContentPane(preview.screenContainer);
